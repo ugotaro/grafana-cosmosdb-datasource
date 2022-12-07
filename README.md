@@ -3,6 +3,8 @@
 This plugin is a Data Source plugin for Grafana for connecting Azure Cosmos DB
 This version is not yet in alpha and is not intended for widespread use.
 
+![Image](imgs/cosmos_db.png)
+
 ## Getting started
 
 ### Frontend
