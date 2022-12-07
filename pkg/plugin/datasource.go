@@ -111,14 +111,13 @@ func (d *Datasource) query(_ context.Context, pCtx backend.PluginContext, query 
 	// create data frame response.
 	frame := data.NewFrame("response")
 
-	//サーバーに問い合わせる
+	// Get items from server
 	// Specifies the value of the partiton key
 	pk := azcosmos.NewPartitionKeyString(qm.PartitionKey)
-	//アイテムを取得する
+
 	ctx := context.TODO()
 
-	//フィールドの共通部分を取り出して、フィールドに挿入する
-	//時刻で制限できるようにする
+	//Generate query text
 	queryText := "select "
 	splittedColumns := strings.Split(qm.Columns, ",")
 	for i := 0; i < len(splittedColumns); i++ {
@@ -189,7 +188,13 @@ func (d *Datasource) query(_ context.Context, pCtx backend.PluginContext, query 
 			log.DefaultLogger.Debug("Result Cosmos DB", "time", ts)
 
 			for _, str := range columns {
-				raw := fmt.Sprintf("%v", itemResponseBody[str])
+
+				data, hasKey := itemResponseBody[str]
+				if hasKey == false {
+					data = "0"
+				}
+
+				raw := fmt.Sprintf("%v", data)
 				log.DefaultLogger.Debug("Result Cosmos DB", "value", raw)
 				value, err := strconv.ParseFloat(raw, 64)
 
@@ -200,10 +205,20 @@ func (d *Datasource) query(_ context.Context, pCtx backend.PluginContext, query 
 						columnData[str] = []string{}
 					}
 				}
+
 				if _, isFloat := columnData[str].([]float64); err == nil && isFloat {
 					floatArray := columnData[str].([]float64)
 					columnData[str] = append(floatArray, value)
 				} else {
+					if isFloat {
+						tempStringArray := []string{}
+						tempFloatArray := columnData[str].([]float64)
+						for _, tempValue := range tempFloatArray {
+							tempRaw := fmt.Sprintf("%v", tempValue)
+							tempStringArray = append(tempStringArray, tempRaw)
+						}
+						columnData[str] = tempStringArray
+					}
 					stringArray := columnData[str].([]string)
 					columnData[str] = append(stringArray, raw)
 				}
@@ -211,7 +226,6 @@ func (d *Datasource) query(_ context.Context, pCtx backend.PluginContext, query 
 		}
 	}
 
-	log.DefaultLogger.Debug("Result Cosmos DB", "RawData", columnData)
 	// add fields.
 	frame.Fields = append(frame.Fields, data.NewField("time", nil, timeData))
 	for _, str := range columns {

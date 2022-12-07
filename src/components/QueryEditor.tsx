@@ -32,9 +32,16 @@ export class QueryEditor extends PureComponent<Props> {
     onChange({ ...query, columns: event.target.value });
   }
 
+  
+
   render() {
+    const { options } = this.props.datasource;
+    defaultQuery.database = options.defaultDatabase;
+    defaultQuery.container = options.defaultContainer;
+    defaultQuery.partitionKey = options.defaultPartitionKey;
     const query = defaults(this.props.query, defaultQuery);
-    const { container, database, partitionKey, columns } = query;
+    let { columns, database, container, partitionKey } = query;
+
 
     return (
       <div className="gf-form">

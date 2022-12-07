@@ -8,15 +8,19 @@ export interface MyQuery extends DataQuery {
 }
 
 export const defaultQuery: Partial<MyQuery> = {
-  database: "Factory",
-  container: "MeasuredData"
+  database: "",
+  container: "",
+  partitionKey: "",
+  columns: "*",
 };
 
 /**
  * These are options configured for each DataSource instance
  */
 export interface MyDataSourceOptions extends DataSourceJsonData {
-  database?: string;
+  defaultDatabase?: string;
+  defaultContainer?: string;
+  defaultPartitionKey?: string;
 }
 
 /**

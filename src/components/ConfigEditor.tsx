@@ -2,8 +2,7 @@ import React, { ChangeEvent, PureComponent } from 'react';
 import { LegacyForms } from '@grafana/ui';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
 import { MyDataSourceOptions, MySecureJsonData } from '../types';
-
-const { SecretFormField } = LegacyForms;
+const { SecretFormField, FormField } = LegacyForms;
 
 interface Props extends DataSourcePluginOptionsEditorProps<MyDataSourceOptions> {}
 
@@ -18,6 +17,33 @@ export class ConfigEditor extends PureComponent<Props, State> {
     };
     onOptionsChange({ ...options, jsonData });
   };
+
+  onDefaultDatabaseChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { onOptionsChange, options } = this.props;
+    const jsonData = {
+      ...options.jsonData,
+      defaultDatabase: event.target.value,
+    };
+    onOptionsChange({ ...options, jsonData });
+  }
+
+  onDefaultContainerChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { onOptionsChange, options } = this.props;
+    const jsonData = {
+      ...options.jsonData,
+      defaultContainer: event.target.value,
+    };
+    onOptionsChange({ ...options, jsonData });
+  }
+
+  onDefaultPartitionKeyChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { onOptionsChange, options } = this.props;
+    const jsonData = {
+      ...options.jsonData,
+      defaultPartitionKey: event.target.value,
+    };
+    onOptionsChange({ ...options, jsonData });
+  }
 
   // Secure field (only sent to the backend)
   onEndpointUriChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -74,12 +100,44 @@ export class ConfigEditor extends PureComponent<Props, State> {
 
   render() {
     const { options } = this.props;
-    const { secureJsonFields } = options;
+    const { jsonData, secureJsonFields } = options;
     const secureJsonData = (options.secureJsonData || {}) as MySecureJsonData;
 
     return (
       <div className="gf-form-group">
 
+        <div className="gf-form-inline">
+          <div className="gf-form">
+            <FormField
+              value={jsonData.defaultDatabase || ''}
+              label="Default Database"
+              placeholder="input default database name"
+              labelWidth={10}
+              inputWidth={20}
+              onChange={this.onDefaultDatabaseChange}
+            />
+          </div>
+          <div className="gf-form">
+            <FormField
+              value={jsonData.defaultContainer || ''}
+              label="Default Container"
+              placeholder="input default container name"
+              labelWidth={10}
+              inputWidth={20}
+              onChange={this.onDefaultContainerChange}
+            />
+          </div>
+          <div className="gf-form">
+            <FormField
+              value={jsonData.defaultPartitionKey || ''}
+              label="Default PartitionKey"
+              placeholder="input default partition key"
+              labelWidth={10}
+              inputWidth={20}
+              onChange={this.onDefaultPartitionKeyChange}
+            />
+          </div>
+        </div>
         <div className="gf-form-inline">
           <div className="gf-form">
             <SecretFormField
