@@ -1,10 +1,7 @@
-# Grafana data source plugin template
+# Grafana data source plugin for Azure Cosmos DB
 
-This template is a starting point for building a Data Source Plugin for Grafana.
-
-## What are Grafana data source plugins?
-
-Grafana supports a wide range of data sources, including Prometheus, MySQL, and even Datadog. There’s a good chance you can already visualize metrics from the systems you have set up. In some cases, though, you already have an in-house metrics solution that you’d like to add to your Grafana dashboards. Grafana Data Source Plugins enables integrating such solutions with Grafana.
+This plugin is a Data Source plugin for Grafana for connecting Azure Cosmos DB
+This version is not yet in alpha and is not intended for widespread use.
 
 ## Getting started
 
@@ -88,12 +85,6 @@ Grafana supports a wide range of data sources, including Prometheus, MySQL, and 
    ```bash
    mage -l
    ```
-
-# Distributing your plugin
-
-When distributing a Grafana plugin either within the community or privately the plugin must be signed so the Grafana application can verify its authenticity. This can be done with the `@grafana/sign-plugin` package.
-
-_Note: It's not necessary to sign a plugin during development. The docker development environment that is scaffolded with `@grafana/create-plugin` caters for running the plugin without a signature._
 
 ## Initial steps
 
