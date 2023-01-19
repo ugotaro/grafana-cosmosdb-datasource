@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -227,6 +228,7 @@ func (d *Datasource) query(_ context.Context, pCtx backend.PluginContext, query 
 	}
 
 	// add fields.
+	sort.Strings(columns)
 	frame.Fields = append(frame.Fields, data.NewField("time", nil, timeData))
 	for _, str := range columns {
 		frame.Fields = append(frame.Fields, data.NewField(str, nil, columnData[str]))
